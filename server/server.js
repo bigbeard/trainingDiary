@@ -1,7 +1,7 @@
 var express = require('express'),
     routes = require('./routes');
 
-var port = 3000;
+var port = process.env.PORT || 3000;
 
 var createServer = function (port) {
     var server = express();
