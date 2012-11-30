@@ -1,34 +1,33 @@
 <dl class="dl-horizontal">
     <div ng-repeat="row in diary" class="well">
-        <div ng-show="row.date">
+        <div ng-show="row.date != undefined">
             <a ng-click="showDetail = !showDetail">
                 <dt>Date</dt>
                 <dd>{{row.date}}</dd>
             </a>
         </div>
-        <div ng-show="row.trainingType">
+        <div ng-show="row.trainingType != undefined">
             <dt>Type</dt>
             <dd>{{row.trainingType}}</dd>
         </div>
-        <div ng-show="row.timeMinutes">
+        <div ng-show="row.timeMinutes != undefined">
             <dt>Time</dt>
             <dd>{{row.timeMinutes}} minutes</dd>
         </div>
-        <div ng-show="row.distanceMiles">
+        <div ng-show="row.distanceMiles != undefined">
             <dt>Distance</dt>
             <dd>{{row.distanceMiles}} miles</dd>
         </div>
         <div ng-show="showDetail">
-            DETAIL
+            Some detail
             <a ng-click="showDetail = false">
                 hide
             </a>
         </div>
         <button class="btn btn-primary" ng-click="deleteDiaryEntry(row._id)">Delete</button>
-        <a href="#editEntryModal" role="button" ng-click="editDiaryEntry()" class="btn btn-primary" data-toggle="modal">Edit</a>
+        <a href="#editEntryModal" role="button" ng-click="editDiaryEntry(row)" class="btn btn-primary" data-toggle="modal">Edit</a>
     </div>
 </dl>
-
 <a href="#addEntryModal" role="button" class="btn" data-toggle="modal">Add entry</a>
 <div id="addEntryModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <ng-include src="'partials/addDiaryEntry.html'"></ng-include>

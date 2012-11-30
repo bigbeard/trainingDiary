@@ -2,40 +2,43 @@
 
 function diaryController($scope, $http, Diary) {
     $scope.diary = Diary.query();
-    $scope.newEntry = { };
+    $scope.entryToEdit = { };
 
-    $scope.addDiaryEntry = function() {
-        var postData = $scope.newEntry;
+    $scope.saveDiaryEntry = function() {
+        var postData = $scope.entryToEdit;
         console.log("Data to post: ", postData);
-        $http.post('/addDiaryEntry', postData).
-            success(function (data, status, headers, config) {
-                console.log("Success", data);
+        $http.post('/save', postData).
+        success(function (data, status, headers, config) {
+            console.log("Success", data);
+            if (data) {
                 $scope.diary.push(data);
-                $scope.newEntry = {};
-            }).error(function (data, status, headers, config) {
-                console.log("error")
-            });
+            }
+            $scope.entryToEdit = {};
+        }).error(function (data, status, headers, config) {
+            console.log("error")
+        });
     };
 
-    $scope.editDiaryEntry = function() {
-        $scope.currentEntry = $scope.Diary[0];
+    $scope.editDiaryEntry = function(entry) {
+        console.log("Edit diary entry", entry);
+        $scope.entryToEdit = entry;
     };
 
     $scope.deleteDiaryEntry = function(id) {
         console.log("delete id: ", id);
 
         $http.post('/deleteDiaryEntry/' + id).
-            success(function (data, status, headers, config) {
-                console.log("Success");
-                angular.forEach($scope.diary, function (value, key) {
-                    if (value._id === id) {
-                        $scope.diary.splice(key, 1);
-                        return;
-                    }
-                });
-            }).error(function (data, status, headers, config) {
-                console.log("error")
+        success(function (data, status, headers, config) {
+            console.log("Success");
+            angular.forEach($scope.diary, function (value, key) {
+                if (value._id === id) {
+                    $scope.diary.splice(key, 1);
+                    return;
+                }
             });
+        }).error(function (data, status, headers, config) {
+            console.log("error")
+        });
     }
 };
 diaryController.$inject = ['$scope', '$http', 'Diary'];

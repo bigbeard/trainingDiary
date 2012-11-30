@@ -3,6 +3,10 @@ var mongoDb = require('./mongoDb');
 
 var collection = "diary";
 
+var isNumber = function(o) {
+    return ! isNaN (o-0);
+};
+
 exports.addRoutes = function (server) {
     server.get('/diary', function (request, response) {
         mongoDb.getAll(collection, function (err, items) {
@@ -29,12 +33,36 @@ exports.addRoutes = function (server) {
         });
     });
 
-    server.post('/deleteDiaryEntry/:id', function (request, response) {
-        var id = request.params.id;
-        mongoDb.removeById(collection, id, function (err) {
+    server.post('/save', function (request, response) {
+        mongoDb.save(collection, request.body, function(err, result) {
             if (err) {
                 console.log(err);
             }
+            if (!isNumber(result)) {
+                response.write(JSON.stringify(result));
+            }
+            response.end();
+
+        });
+    });
+
+    server.post('/deleteDiaryEntry/:id', function (request, response) {
+        var id = request.params.id;
+        mongoDb.removeById(collection, id, function (err, result) {
+            if (err) {
+                console.log(err);
+            }
+            response.write(JSON.stringify({ quantityDeleted: result}));
+            response.end();
+        });
+    });
+
+    server.post('/updateDiaryEntry', function (request, response) {
+        mongoDb.insert(collection, request.body, function(err, result) {
+            if (err) {
+                console.log(err);
+            }
+            response.write(JSON.stringify(result[0]));
             response.end();
         });
     });

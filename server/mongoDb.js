@@ -19,45 +19,40 @@ var getCollection = function (collectionName, callback) {
     });
 };
 
+var doCallback = function(callback, err, result, functionName) {
+    if (functionName) {
+        console.log(functionName + " err: ", err);
+        console.log(functionName + " result: ", result);
+    }
+    if (err) {
+        console.log(err);
+        if (callback) {
+            callback(err);
+        }
+    } else {
+        if (callback) {
+            callback(err, result);
+        }
+    }
+};
+
 var mongoDatabase = {
     openDatabase: function (currentDb, callback) {
         currentDb.open(function (err, db) {
-            if(err) {
-                console.log(err);
-                if (callback) {
-                    callback(err);
-                }
-            } else {
-                console.log('connected to db');
-                if (callback) {
-                    callback(db);
-                }
-            };
+            doCallback(callback, err, db, false);
         });
     },
     clear: function (collectionName, callback) {
         getCollection(collectionName, function(err, collection) {
             collection.remove(function (err, collection) {
-                if (err) {
-                    console.log(err);
-                    if (callback) {
-                        callback(err);
-                    }
-                } else {
-                    console.log('collection has been cleared');
-                    if (callback) {
-                        callback();
-                    }
-                }
+                doCallback(callback, err);
             });
         });
     },
     getAll: function (collectionName, callback) {
         getCollection(collectionName, function(err, collection) {
             collection.find().toArray(function(err, items) {
-                if (callback) {
-                    callback(err, items);
-                }
+                doCallback(callback, err, items);
             });
         });
     },
@@ -69,23 +64,32 @@ var mongoDatabase = {
                 }
             } else {
                 collection.insert(doc, {safe: true}, function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        if (callback) {
-                            callback(err);
-                        }
-                    } else {
-                        console.log(result);
-                        if (callback) {
-                            callback(err, result);
-                        }
-                    }
+                    doCallback(callback, err, result);
+                });
+            }
+        });
+    },
+    save: function (collectionName, doc, callback) {
+        getCollection(collectionName, function(err, collection) {
+            if (err) {
+                if (callback) {
+                    callback(err);
+                }
+            } else {
+                console.log("save: ", doc);
+                if (doc._id) {
+                    var o_id = new BSON.ObjectID(doc._id);
+                    doc._id = o_id;
+                }
+                collection.save(doc, {safe: true}, function (err, result) {
+                    doCallback(callback, err, result, "save");
                 });
             }
         });
     },
     removeById: function (collectionName, id, callback) {
         getCollection(collectionName, function(err, collection) {
+            console.log("removeById id: ", id);
             if (err) {
                 if (callback) {
                     callback(err);
@@ -93,21 +97,13 @@ var mongoDatabase = {
             } else {
                 var o_id = new BSON.ObjectID(id);
                 collection.remove({ _id: o_id }, { safe: true }, function (err, result) {
-                    if (err) {
-                        console.log("mongo remove: ",err);
-                        if (callback) {
-                            callback(err);
-                        }
-                    } else {
-                        if (callback) {
-                            callback(err, result);
-                        }
-                    }
+                    doCallback(callback, err, result, "removeById");
                 });
             }
         });
     },
     findById: function (collectionName, id, callback) {
+        console.log("Find id: ", id);
         getCollection(collectionName, function(err, collection) {
             if (err) {
                 if (callback) {
@@ -116,14 +112,14 @@ var mongoDatabase = {
             } else {
                 var o_id = new BSON.ObjectID(id);
                 collection.find({ _id: o_id }).toArray(function (err, docs) {
-                    console.log("Find: ", docs)
+                    doCallback(callback, err, docs, "findById");
                 });
             }
         });
     }
 };
 
-mongoDatabase.openDatabase(currentDb, function(db) {
+mongoDatabase.openDatabase(currentDb, function(err, db) {
     database = db;
 });
 
