@@ -1,5 +1,5 @@
-var mongoDb = require('./mongoDb');
-
+//var mongoDb = require('./mongoDb');
+var database = require('./tinyDb');
 
 var collection = "diary";
 
@@ -9,7 +9,7 @@ var isNumber = function(o) {
 
 exports.addRoutes = function (server) {
     server.get('/diary', function (request, response) {
-        mongoDb.getAll(collection, function (err, items) {
+        database.getAll(collection, function (err, items) {
             if (err) {
                 console.log('error getting diary data from db: ', err);
                 return;
@@ -24,7 +24,7 @@ exports.addRoutes = function (server) {
     });
 
     server.post('/addDiaryEntry', function (request, response) {
-        mongoDb.insert(collection, request.body, function(err, result) {
+        database.insert(collection, request.body, function(err, result) {
             if (err) {
                 console.log(err);
             }
@@ -34,7 +34,7 @@ exports.addRoutes = function (server) {
     });
 
     server.post('/save', function (request, response) {
-        mongoDb.save(collection, request.body, function(err, result) {
+        database.save(collection, request.body, function(err, result) {
             if (err) {
                 console.log(err);
             }
@@ -48,7 +48,7 @@ exports.addRoutes = function (server) {
 
     server.post('/deleteDiaryEntry/:id', function (request, response) {
         var id = request.params.id;
-        mongoDb.removeById(collection, id, function (err, result) {
+        database.removeById(collection, id, function (err, result) {
             if (err) {
                 console.log(err);
             }
@@ -58,7 +58,7 @@ exports.addRoutes = function (server) {
     });
 
     server.post('/updateDiaryEntry', function (request, response) {
-        mongoDb.insert(collection, request.body, function(err, result) {
+        database.insert(collection, request.body, function(err, result) {
             if (err) {
                 console.log(err);
             }
