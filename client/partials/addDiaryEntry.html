@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Add Diary Entry</h3>
+</div>
+<div class="modal-body">
+    <label>Date</label>
+    <!--
+    <input type="text" value="02/16/12" data-date-format="mm/dd/yy" id="datepicker" >
+    -->
+    <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd/mm/yyyy">
+        <input class="span2" size="16" type="text" value="12-02-2012" placeholder="dd/mm/yyyy">
+        <span class="add-on">
+            <i class="icon-calendar"></i>
+        </span>
+    </div>
+    <label>Type</label>
+    <input type="text" placeholder="e.g. Race" ng-model="newEntry.trainingType">
+    <label>Time (in minutes)</label>
+    <input type="text" placeholder="number" ng-model="newEntry.timeMinutes">
+    <label>Distance (in miles)</label>
+    <input type="text" placeholder="number" ng-model="newEntry.distanceMiles">
+</div>
+<div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button class="btn btn-primary" data-dismiss="modal" ng-click="addDiaryEntry()">Save</button>
+</div>
