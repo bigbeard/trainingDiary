@@ -44,7 +44,7 @@ var tinyDatabase = {
         var id = doc._id;
 
         db.update(id, doc, function (err) {
-            doCallback(callback, err);
+            doCallback(callback, err, 1);
         });
     },
     save: function (collectionName, doc, callback) {
