@@ -9,7 +9,7 @@ var createServer = function (port) {
     server.configure(function(){
         server.use(express.bodyParser());
         server.set('view engine', 'jshtml');
-        server.use(express.static(__dirname + '/../client'));
+        server.use(express.static(__dirname + '/client'));
         console.log("dirname: ", __dirname);
     });
 
