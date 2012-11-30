@@ -1,5 +1,5 @@
 var express = require('express'),
-    routes = require('./routes');
+    routes = require('./server/routes');
 
 var port = process.env.PORT || 3000;
 

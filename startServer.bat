@@ -1,1 +1,1 @@
-node-dev .\server\server
+node-dev .\server
