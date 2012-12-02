@@ -15,6 +15,7 @@
 	"express": "*",
 	"mongodb": "*",
 	"node-uuid": "*",
-	"tiny": "*"
+	"tiny": "*",
+	"coll": "*"
   }
 }

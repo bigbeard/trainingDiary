@@ -24,6 +24,10 @@
         <div ng-view="main" class="container">
         </div>
 
+        <div id="loginForm" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-show="loginRequired.showLogin">
+            <ng-include src="'partials/loginForm.html'"></ng-include>
+        </div>
+
         <!-- In production use:
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
         -->

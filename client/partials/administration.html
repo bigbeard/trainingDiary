@@ -1,4 +1,22 @@
-<p>This is Administration partial view</p>
-<p>
-    Some stuff!
-</p>
+<dl class="dl-horizontal">
+    <div ng-repeat="row in users" class="well">
+        <div ng-show="row.username != undefined">
+            <dt>username</dt>
+            <dd>{{row.username}}</dd>
+        </div>
+        <div ng-show="row.password != undefined">
+            <dt>Password</dt>
+            <dd>{{row.password}}</dd>
+        </div>
+        <button class="btn btn-primary" ng-click="deleteUser(row._id)">Delete</button>
+        <a href="#editUserModal" role="button" ng-click="editUser(row)" class="btn btn-primary" data-toggle="modal">Edit</a>
+    </div>
+</dl>
+<a href="#addUserModal" role="button" class="btn" data-toggle="modal">Add user</a>
+<div id="addUserModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <ng-include src="'partials/editUser.html'"></ng-include>
+</div>
+<div id="editUserModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <ng-include src="'partials/editUser.html'"></ng-include>
+</div>
+
