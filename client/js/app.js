@@ -6,7 +6,7 @@ config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvide
     $routeProvider.when('/diary', { templateUrl: 'partials/diary.html', controller: diaryController, view: 'main' });
     $routeProvider.when('/administration', { templateUrl: 'partials/administration.html', controller: adminController, view: 'main' });
     $routeProvider.when('/about', { templateUrl: 'partials/about.html', controller: AboutController, view: 'main' });
-    $routeProvider.otherwise({redirectTo: '/plan'});
+    $routeProvider.otherwise({redirectTo: '/about'});
 
     var interceptor = ['$rootScope','$q', function(scope, $q) {
         function success(response) {
