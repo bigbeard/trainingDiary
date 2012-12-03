@@ -17,6 +17,6 @@
 	"node-uuid": "*",
 	"tiny": "*",
 	"coll": "*"
-  }
+  },
   "engine": "node 0.8.3"
 }
