@@ -1,17 +1,21 @@
-<div ng-controller="loginController">
-    <div class="modal-header" >
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Login</h3>
-    </div>
-    <div class="modal-body">
-        <label>Username</label>
-        <input type="text" placeholder="username" ng-model="user.username">
-        <label>Password</label>
-        <input type="text" placeholder="password" ng-model="user.password">
-    </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button class="btn btn-primary" data-dismiss="modal" ng-click="doLogin()">Save</button>
+<div id="loginForm" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div ng-controller="loginController">
+        <div class="modal-header" >
+            <h3 id="myModalLabel">Login</h3>
+        </div>
+        <div class="modal-body">
+            <label>Username</label>
+            <input type="text" placeholder="username" ng-model="user.username">
+            <label>Password</label>
+            <input type="text" placeholder="password" ng-model="user.password">
+        </div>
+        <div ng-show="login.failed">
+            <label>Login failed</label>
+        </div>
+        <div class="modal-footer">
+            <!--    <button class="btn" aria-hidden="true" ng-click="cancelLogin()">Close</button> -->
+            <button class="btn btn-primary" ng-click="doLogin()">Login</button>
+        </div>
     </div>
 </div>
 

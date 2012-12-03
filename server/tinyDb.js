@@ -21,15 +21,45 @@ var doCallback = function(callback, err, result, functionName) {
     }
 };
 
+var compactDatabase = function (collectionName) {
+    var db = dbs.get(collectionName);
+    db.compact(function (err) {
+        if (err) {
+            console.log("Error compacting ", collectionName, err);
+        } else {
+            console.log(collectionName + " compacted");
+        }
+    });
+};
+
 var tinyDatabase = {
     openDatabase: function () {
         tiny('diary.tiny', function (err, database) {
             dbs.set('diary', database);
             console.log("Attached to diary.tiny");
+            compactDatabase('diary');
         });
         tiny('user.tiny', function (err, database) {
             dbs.set('user', database);
             console.log("Attached to user.tiny");
+            compactDatabase('user');
+        });
+        tiny('token.tiny', function (err, database) {
+            dbs.set('token', database);
+            console.log("Attached to token.tiny");
+            compactDatabase('token');
+        });
+    },
+    get: function(collectionName, fieldName, value, callback) {
+        var db = dbs.get(collectionName);
+        db.fetch({}, function(doc, key) { if (doc[fieldName] === value) return true; }, function (err, items) {
+            doCallback(callback, err, items);
+        });
+    },
+    getById: function(collectionName, id, callback) {
+        var db = dbs.get(collectionName);
+        db.fetch({}, function(doc, key) { if (key === id) return true; }, function (err, items) {
+            doCallback(callback, err, items);
         });
     },
     getAll: function (collectionName, callback) {
@@ -61,6 +91,18 @@ var tinyDatabase = {
         } else {
             this.insert(collectionName, doc, callback);
         }
+    },
+    remove: function (collectionName, fieldName, value, callback) {
+        this.get(collectionName, fieldName, value, function (err, items) {
+            if (items) {
+                items.forEach(function(item) {
+                    this.removeById(collectionName, item.key, function (err) {
+                        console.log("Error removing token: ", err);
+                    });
+                });
+            }
+            doCallback(callback, err, undefined, "remove");
+        });
     },
     removeById: function (collectionName, id, callback) {
         var db = dbs.get(collectionName);

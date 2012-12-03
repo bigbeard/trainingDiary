@@ -2,7 +2,7 @@
 
 /* Services */
 angular.module('getDiary', ['ngResource']).factory('Diary', function($resource) {
-    return $resource('diary');
+    return $resource('/api/diary');
 });
 
 angular.module('getUsers', ['ngResource']).factory('Users', function($resource) {

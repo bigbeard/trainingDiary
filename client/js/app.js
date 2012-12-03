@@ -4,7 +4,6 @@
 angular.module('TrainingCentre', ['getDiary']).
 config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
     $routeProvider.when('/diary', { templateUrl: 'partials/diary.html', controller: diaryController, view: 'main' });
-    $routeProvider.when('/plan', { templateUrl: 'partials/plan.html', controller: MyCtrl2, view: 'main' });
     $routeProvider.when('/administration', { templateUrl: 'partials/administration.html', controller: adminController, view: 'main' });
     $routeProvider.when('/about', { templateUrl: 'partials/about.html', controller: AboutController, view: 'main' });
     $routeProvider.otherwise({redirectTo: '/plan'});
@@ -39,13 +38,15 @@ config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvide
     $httpProvider.responseInterceptors.push(interceptor);
 }]);
 
-angular.module('TrainingCentre').run(['$rootScope', '$http', function(scope, $http) {
-    // Holds all the requests which failed due to 401 response.
+angular.module('TrainingCentre').run(['$rootScope', '$http', '$location', function(scope, $http, $location) {
     scope.requests401 = [];
-    scope.loginRequired = { showLogin: false };
+    scope.login = { required: false, failed: false };
+    scope.user = {};
 
-    // On 'event:loginConfirmed', resend all the 401 requests.
     scope.$on('event:loginConfirmed', function() {
+        console.log("login confirmed");
+        $('#loginForm').modal('hide');
+        scope.login.failed = false;
         var i, requests = scope.requests401;
         for (i = 0; i < requests.length; i++) {
             retry(requests[i]);
@@ -59,33 +60,47 @@ angular.module('TrainingCentre').run(['$rootScope', '$http', function(scope, $ht
         }
     });
 
-    // On 'event:loginRequest' send credentials to the server.
-    scope.$on('event:loginRequest', function(event, username, password) {
-        var payload = $.param({j_username: username, j_password: password});
-        var config = {
-            headers: {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
-        }
-        $http.post('j_spring_security_check', payload, config).success(function(data) {
-            if (data === 'AUTHENTICATION_SUCCESS') {
+    scope.$on('event:loginFailed', function() {
+        console.log("login failed");
+        $('#loginForm').modal({show: true, backdrop: 'static'});
+        scope.login.failed = true;
+    });
+
+    scope.$on('event:loginRequest', function(username, password) {
+        console.log("login request");
+        var postData = scope.user;
+        $http.post('/authentication/login', postData).
+        success(function (data, status, headers, config) {
+            if (data.success) {
                 scope.$broadcast('event:loginConfirmed');
+                scope.user = {};
+            } else {
+                scope.$broadcast('event:loginFailed');
             }
+        }).error(function (data, status, headers, config) {
+            console.log("error: ", status);
         });
     });
 
-    // On 'logoutRequest' invoke logout on the server and broadcast 'event:loginRequired'.
     scope.$on('event:logoutRequest', function() {
-        $http.put('j_spring_security_logout', {}).success(function() {
+        $http.post('/authentication/logout').
+        success(function (data, status, headers, config) {
+            console.log("Success", data);
             ping();
+        }).error(function (data, status, headers, config) {
+            console.log("error: ", status);
         });
     });
 
     scope.$on('event:loginRequired', function() {
-        scope.loginRequired = { showLogin: true };
+        console.log("login required");
+        $location.path('/about');
+        $('#loginForm').modal({show: true, backdrop: 'static'});
+        scope.login.failed = false;
     });
 
-    // Ping server to figure out if user is already logged in.
     function ping() {
-        $http.get('ping').success(function() {
+        $http.get('api/ping').success(function() {
             scope.$broadcast('event:loginConfirmed');
         });
     };
