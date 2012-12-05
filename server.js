@@ -18,7 +18,9 @@ var validateToken = function (token, callback) {
 
 var authenticator = function (request, response, next) {
     if (request.cookies) {
-        var token = request.cookies.token.value;
+        if (request.cookies.token) {
+            var token = request.cookies.token.value;
+        }
     }
     validateToken(token, function (valid, username) {
         if (valid) {
