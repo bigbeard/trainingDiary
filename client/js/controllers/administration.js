@@ -1,5 +1,5 @@
 function adminController($scope, $http) {
-    $scope.users = {};
+    $scope.users = [ ];
 
     $http.get('/api/user').
     success(function (data, status, headers, config) {
