@@ -1,8 +1,8 @@
 'use strict';
 
-// Declare app level module which depends on filters, and services
-angular.module('TrainingCentre', ['getDiary']).
-config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
+var trainingCentreModule = angular.module('TrainingCentre', ['getDiary', 'ngCookies']);
+
+trainingCentreModule.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
     $routeProvider.when('/diary', { templateUrl: 'partials/diary.html', controller: diaryController, view: 'main' });
     $routeProvider.when('/administration', { templateUrl: 'partials/administration.html', controller: adminController, view: 'main' });
     $routeProvider.when('/about', { templateUrl: 'partials/about.html', controller: AboutController, view: 'main' });
@@ -38,15 +38,20 @@ config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvide
     $httpProvider.responseInterceptors.push(interceptor);
 }]);
 
-angular.module('TrainingCentre').run(['$rootScope', '$http', '$location', function(scope, $http, $location) {
+trainingCentreModule.run(['$rootScope', '$http', '$location', function(scope, $http, $location) {
     scope.requests401 = [];
-    scope.login = { required: false, failed: false };
+    scope.authentication = { required: false, failed: false, loggedIn: false, name: "", test: "test123" };
     scope.user = {};
 
     scope.$on('event:loginConfirmed', function() {
         console.log("login confirmed");
         $('#loginForm').modal('hide');
-        scope.login.failed = false;
+        scope.authentication.failed = false;
+        scope.authentication.loggedIn = true;
+
+        console.log("scope.user:", scope.user);
+        console.log("scope.authentication:", scope.authentication);
+
         var i, requests = scope.requests401;
         for (i = 0; i < requests.length; i++) {
             retry(requests[i]);
@@ -64,18 +69,21 @@ angular.module('TrainingCentre').run(['$rootScope', '$http', '$location', functi
         console.log("login failed");
         $('#loginForm').modal({show: true, backdrop: 'static'});
         scope.login.failed = true;
+        scope.authentication.loggedIn = false;
     });
 
-    scope.$on('event:loginRequest', function(username, password) {
+    scope.$on('event:loginRequest', function() {
         console.log("login request");
         var postData = scope.user;
         $http.post('/authentication/login', postData).
         success(function (data, status, headers, config) {
             if (data.success) {
                 scope.$broadcast('event:loginConfirmed');
+                scope.authentication.name = scope.user.username;
                 scope.user = {};
             } else {
                 scope.$broadcast('event:loginFailed');
+                scope.authentication.name = "";
             }
         }).error(function (data, status, headers, config) {
             console.log("error: ", status);
@@ -86,17 +94,25 @@ angular.module('TrainingCentre').run(['$rootScope', '$http', '$location', functi
         $http.post('/authentication/logout').
         success(function (data, status, headers, config) {
             console.log("Success", data);
-            ping();
+            scope.authentication.loggedIn = false;
+            scope.authentication.failed = false;
+            scope.authentication.name = "";
+            $location.path('/about');
+            //ping();
         }).error(function (data, status, headers, config) {
             console.log("error: ", status);
         });
     });
 
     scope.$on('event:loginRequired', function() {
+        scope.authentication.loggedIn = false;
+        scope.authentication.failed = false;
+        scope.authentication.name = "";
+        scope.$eval();
+
         console.log("login required");
-        $location.path('/about');
+        //$location.path('/about');
         $('#loginForm').modal({show: true, backdrop: 'static'});
-        scope.login.failed = false;
     });
 
     function ping() {

@@ -1,5 +1,5 @@
 var express = require('express'),
-routes = require('./server/routes'),
+routes = require('./server/routes/routes'),
 database = require('./server/tinyDb');
 
 var port = process.env.PORT || 3000;
@@ -18,8 +18,9 @@ var validateToken = function (token, callback) {
 
 var authenticator = function (request, response, next) {
     if (request.cookies) {
-        if (request.cookies.token) {
-            var token = request.cookies.token.value;
+        if (request.cookies.user) {
+            var user = JSON.parse(request.cookies.user);
+            var token = user.token;
         }
     }
     validateToken(token, function (valid, username) {
@@ -37,10 +38,10 @@ var createServer = function (port) {
     server.configure(function(){
         server.use(express.bodyParser());
         server.set('view engine', 'jshtml');
-        server.use(express.static(__dirname + '/client'));
         server.use(express.cookieParser('mmmcheese'));
         server.use('/api', authenticator);
-    });
+        server.use(express.static(__dirname + '/client'));
+  });
 
     server.configure('development', function(){
         server.use(express.errorHandler({ dumpExceptions: true, showStack: true }));

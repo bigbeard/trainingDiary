@@ -10,7 +10,7 @@ var doCallback = function(callback, err, result, functionName) {
         console.log(functionName + " result: ", result);
     }
     if (err) {
-        console.log(err);
+        //console.log(err);
         if (callback) {
             callback(err);
         }
@@ -72,7 +72,6 @@ var tinyDatabase = {
         var db = dbs.get(collectionName);
         var id = uuid.v1();
         doc._id = id;
-        console.log("doc: ", doc);
         db.set(id, doc, function (err) {
             doCallback(callback, err, doc);
         });
@@ -87,27 +86,29 @@ var tinyDatabase = {
     },
     save: function (collectionName, doc, callback) {
         if (doc._id) {
-            this.update(collectionName, doc, callback);
+            tinyDatabase.update(collectionName, doc, callback);
         } else {
-            this.insert(collectionName, doc, callback);
+            tinyDatabase.insert(collectionName, doc, callback);
         }
     },
     remove: function (collectionName, fieldName, value, callback) {
-        this.get(collectionName, fieldName, value, function (err, items) {
+        tinyDatabase.get(collectionName, fieldName, value, function (err, items) {
             if (items) {
                 items.forEach(function(item) {
-                    this.removeById(collectionName, item.key, function (err) {
-                        console.log("Error removing token: ", err);
+                    tinyDatabase.removeById(collectionName, item._key, function (err) {
+                        if (err) {
+                            console.log("Error removing token: ", err, item._key);
+                        }
                     });
                 });
             }
-            doCallback(callback, err, undefined, "remove");
+            doCallback(callback, err, undefined);
         });
     },
     removeById: function (collectionName, id, callback) {
         var db = dbs.get(collectionName);
         db.remove(id, function (err) {
-            doCallback(callback, err, undefined, "removeById");
+            doCallback(callback, err, undefined);
         });
     },
 };

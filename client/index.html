@@ -9,15 +9,17 @@
         <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     </head>
     <body style="padding:40px">
-        <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar navbar-inverse navbar-fixed-top" ng-controller="loginController">
             <div class="navbar-inner">
                 <div class="container">
                     <a class="brand" href="#about">My Training Centre</a>
-                    <div ng-controller="loginController">
+                    <div>
                         <a class="btn btn-primary" href="#diary">Diary</a>
                         <a class="btn btn-primary" href="#administration">Administration</a>
-                        <a class="btn" href="" ng-click="logout()">Logout</a>
-                    </div>
+                        <a class="btn" href="" ng-hide="authentication.loggedIn" ng-click="login()">Login</a>
+                        <a class="btn" href="" ng-show="authentication.loggedIn" ng-click="logout()">Logout</a>
+                        <span class="info" ng-show="authentication.loggedIn">Hello {{authentication.name}}</span>
+                 </div>
                 </div>
             </div>
         </div>
@@ -30,6 +32,7 @@
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
         -->
         <script src="lib/angular/angular.js"></script>
+        <script src="lib/angular/angular-cookies.js"></script>
         <script src="js/app.js"></script>
         <script src="js/services.js"></script>
         <script src="js/controllers.js"></script>
