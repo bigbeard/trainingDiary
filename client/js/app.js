@@ -90,7 +90,7 @@ trainingCentreModule.run(['$rootScope', '$http', '$location', function(scope, $h
         });
     });
 
-    scope.$on('event:logoutRequest', function() {
+    scope.$on('event:logoutRequest', function () {
         $http.post('/authentication/logout').
         success(function (data, status, headers, config) {
             console.log("Success", data);
@@ -98,13 +98,17 @@ trainingCentreModule.run(['$rootScope', '$http', '$location', function(scope, $h
             scope.authentication.failed = false;
             scope.authentication.name = "";
             $location.path('/about');
-            //ping();
         }).error(function (data, status, headers, config) {
             console.log("error: ", status);
         });
     });
 
-    scope.$on('event:loginRequired', function() {
+    scope.$on('event:loginCancelled', function () {
+        $('#loginForm').modal('hide');
+        $location.path('/about');
+    });
+
+    scope.$on('event:loginRequired', function () {
         scope.authentication.loggedIn = false;
         scope.authentication.failed = false;
         scope.authentication.name = "";

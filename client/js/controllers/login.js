@@ -13,16 +13,14 @@ function loginController($scope, $cookies, $cookieStore) {
     };
 
     $scope.cancelLogin = function () {
-        $('#loginForm').modal('hide');
+        $scope.$emit('event:loginCancelled');
     };
 
     $scope.logout = function () {
-        console.log("logout");
         $scope.$emit('event:logoutRequest');
     };
 
     $scope.login = function () {
-        console.log("login");
         $scope.$emit('event:loginRequired');
     };
 
