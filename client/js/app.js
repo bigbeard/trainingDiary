@@ -68,7 +68,7 @@ trainingCentreModule.run(['$rootScope', '$http', '$location', function(scope, $h
     scope.$on('event:loginFailed', function() {
         console.log("login failed");
         $('#loginForm').modal({show: true, backdrop: 'static'});
-        scope.login.failed = true;
+        scope.authentication.failed = true;
         scope.authentication.loggedIn = false;
     });
 

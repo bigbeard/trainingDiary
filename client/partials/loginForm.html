@@ -10,7 +10,9 @@
             <input type="text" placeholder="password" ng-model="user.password">
         </div>
         <div ng-show="authentication.failed">
-            <label>Login failed</label>
+            <p>
+                <label class="text-error modal-body">Failed to login: invalid username or password</label>
+            </p>
         </div>
         <div class="modal-footer">
             <!--    <button class="btn" aria-hidden="true" ng-click="cancelLogin()">Close</button> -->
