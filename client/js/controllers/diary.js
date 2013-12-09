@@ -15,7 +15,7 @@ function diaryController($scope, $http, Diary) {
             }
             $scope.entryToEdit = {};
         }).error(function (data, status, headers, config) {
-            console.log("error")
+            console.log("error");
         });
     };
 
@@ -37,9 +37,9 @@ function diaryController($scope, $http, Diary) {
                 }
             });
         }).error(function (data, status, headers, config) {
-            console.log("error")
+            console.log("error");
         });
-    }
+    };
 };
 diaryController.$inject = ['$scope', '$http', 'Diary'];
 
